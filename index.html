@@ -190,21 +190,95 @@
             margin-bottom: 20px;
         }
 
-        .trust-placeholder {
-            height: 100px;
-            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #888;
-            font-size: 0.9rem;
+        .trust-image-container {
+            position: relative;
             cursor: pointer;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .trust-image-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .trust-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.5rem;
+            font-weight: bold;
+            pointer-events: none; /* 让水印不影响点击事件 */
+            text-shadow: 0 0 5px rgba(0,0,0,0.3);
+            white-space: nowrap;
+        }
+
+        /* 图片预览模态框样式 */
+        .image-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .image-modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            text-align: center;
+        }
+
+        .image-modal-image {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
             transition: transform 0.2s ease;
         }
 
-        .trust-placeholder:hover {
-            transform: scale(1.05);
+        .image-modal-close:hover {
+            transform: rotate(90deg);
+        }
+
+        /* 新增：预览模态框内的水印 */
+        .modal-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 2.5rem;
+            font-weight: bold;
+            pointer-events: none;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+            white-space: nowrap;
         }
 
         .important-notes {
@@ -254,6 +328,13 @@
             font-size: 1.3rem;
         }
 
+        .contact-buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
         .contact-button {
             display: inline-block;
             background: linear-gradient(45deg, #667eea, #764ba2);
@@ -296,6 +377,15 @@
 
             .price-grid {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        /* 电脑端图片尺寸优化 */
+        @media (min-width: 769px) {
+            /* 调整图片预览模态框的图片尺寸，让它在电脑端也不会太大 */
+            .image-modal-image {
+                max-width: 900px;
+                max-height: 80vh; /* 限制图片高度不超过视口高度的80% */
             }
         }
     </style>
@@ -514,14 +604,33 @@
         <div class="trust-section">
             <h3>🏆 诚信图展示区</h3>
             <div class="trust-images">
-                <div class="trust-placeholder" onclick="openImageModal(this)">点击预览成员1</div>
-                <div class="trust-placeholder" onclick="openImageModal(this)">点击预览成员2</div>
-                <div class="trust-placeholder" onclick="openImageModal(this)">点击预览成员3</div>
-                <div class="trust-placeholder" onclick="openImageModal(this)">点击预览成员4</div>
-                <div class="trust-placeholder" onclick="openImageModal(this)">点击预览成员5</div>
-                <div class="trust-placeholder" onclick="openImageModal(this)">点击预览成员6</div>
+                <!-- 请将下面的 'images/your-image-1.jpg' 替换为你的真实图片路径 -->
+                <div class="trust-image-container" onclick="showImageModal('cxt/cxt1.jpg')">
+                    <img src="cxt/cxt1.jpg" alt="客户反馈图片1" class="trust-image">
+                    <div class="watermark">Jo极工作室</div>
+                </div>
+                <div class="trust-image-container" onclick="showImageModal('cxt/cxt2.jpg')">
+                    <img src="cxt/cxt2.jpg" alt="客户反馈图片2" class="trust-image">
+                    <div class="watermark">Jo极工作室</div>
+                </div>
+                <div class="trust-image-container" onclick="showImageModal('cxt/cxt3.jpg')">
+                    <img src="cxt/cxt3.jpg" alt="客户反馈图片3" class="trust-image">
+                    <div class="watermark">Jo极工作室</div>
+                </div>
+                <div class="trust-image-container" onclick="showImageModal('cxt/cxt4.jpg')">
+                    <img src="cxt/cxt4.jpg" alt="客户反馈图片4" class="trust-image">
+                    <div class="watermark">Jo极工作室</div>
+                </div>
+                <div class="trust-image-container" onclick="showImageModal('icxt/cxt5.jpg')">
+                    <img src="cxt/cxt5.jpg" class="trust-image">
+                    <div class="watermark">Jo极工作室</div>
+                </div>
+                <div class="trust-image-container" onclick="showImageModal('cxt/cxt6.jpg')">
+                    <img src="cxt/cxt6.jpg" alt="客户反馈图片6" class="trust-image">
+                    <div class="watermark">Jo极工作室</div>
+                </div>
             </div>
-            <p style="color: #666; font-size: 0.9rem; text-align: center;">可点击放大预览成员反馈</p>
+            <p style="color: #666; font-size: 0.9rem; text-align: center;">可点击图片放大预览客户反馈</p>
         </div>
 
         <!-- 重要说明 -->
@@ -541,16 +650,17 @@
         <div class="contact-section">
             <h3>📞 联系与下单</h3>
             <p style="margin-bottom: 20px; color: #666;">以下为Jo极工作室联系方式：</p>
-            <a href="#" class="contact-button" onclick="showContact()">联系客服下单</a>
-            <br><br>
+            <div class="contact-buttons-container">
+                <!-- 更新为直接链接 -->
+                <a href="https://m.me/your-messenger-id-1" target="_blank" class="contact-button">联系客服 1</a>
+                <a href="https://m.me/your-messenger-id-2" target="_blank" class="contact-button">联系客服 2</a>
+            </div>
+            
+            <br>
             <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
                 <div style="text-align: center;">
                     <div style="font-size: 2rem; margin-bottom: 5px;">💬</div>
-                    <div>微信咨询</div>
-                </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 2rem; margin-bottom: 5px;">📱</div>
-                    <div>QQ客服</div>
+                    <div>Messenger咨询</div>
                 </div>
                 <div style="text-align: center;">
                     <div style="font-size: 2rem; margin-bottom: 5px;">💳</div>
@@ -561,28 +671,41 @@
 
         <!-- 页脚 -->
         <div class="footer">
-            <p>© 2024 Jo极工作室 | 专业可靠的游戏服务提供商</p>
-            <p style="margin-top: 10px; font-size: 0.8rem;">服务时间：9:00-23:00 (马来西亚时间) | 仅接受TNG电子钱包付款</p>
+            <p>© 2025 Jo极工作室 | 专业可靠的游戏服务提供商</p>
+            <p style="margin-top: 10px; font-size: 0.8rem;">服务时间：24小时| 仅接受TNG电子钱包付款</p>
+        </div>
+    </div>
+
+    <!-- 图片预览模态框 -->
+    <div id="imageModal" class="image-modal-overlay">
+        <span class="image-modal-close" onclick="closeImageModal()">×</span>
+        <div class="image-modal-content">
+            <img id="modalImage" class="image-modal-image" src="" alt="放大图片">
+            <!-- 新增的模态框水印 -->
+            <div class="modal-watermark">Jo极工作室</div>
         </div>
     </div>
 
     <script>
-        function openImageModal(element) {
-            alert('这里可以展示客户反馈图片\n\n' + element.textContent + '\n\n在实际应用中，您可以:\n1. 上传真实的客户反馈截图\n2. 使用模态框显示大图\n3. 添加图片轮播功能');
+        // 图片预览模态框功能
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+
+        function showImageModal(src) {
+            modalImage.src = src;
+            modal.style.display = 'flex';
         }
 
-        function showContact() {
-            alert('Jo极工作室联系方式:\n\n' +
-                  '💬 微信: [未开放]\n' +
-                  '📱 QQ: [未开放]\n' +
-                  '📞 WhatsApp: [未开放]\n' +
-                  '💳 TNG付款: [未开放]\n\n' +
-                  '⚠️ 重要提醒:\n' +
-                  '• 仅接受TNG电子钱包付款\n' +
-                  '• 下单前请先联系确认库存\n' +
-                  '• 所有价格以马来西亚令吉(RM)计算\n\n' +
-                  '请将方括号内容替换为您的真实联系方式');
+        function closeImageModal() {
+            modal.style.display = 'none';
         }
+        
+        // 当点击预览模态框的背景时，关闭模态框
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closeImageModal();
+            }
+        });
 
         // 添加滚动动画效果
         window.addEventListener('scroll', () => {
