@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jo极工作室｜高效·稳定·可信</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* 新增：定义背景图片和滤镜的过渡效果 */
+        :root {
+            --bg-image: none;
+            --bg-opacity: 0;
         }
 
         body {
@@ -16,14 +16,41 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: #333;
+            transition: background 0.5s ease-in-out;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        
+        /* 使用伪元素创建模糊背景层，以避免直接影响 body 的内容 */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: var(--bg-image);
+            background-size: cover;
+            background-position: center;
+            filter: blur(15px); /* 模糊滤镜 */
+            opacity: var(--bg-opacity);
+            transition: opacity 0.5s ease-in-out;
+            z-index: 1; /* 确保在内容之上，但在弹窗之下 */
+            pointer-events: none; /* 确保不会阻碍点击事件 */
+        }
+        
+        .modal-active body::after {
+            --bg-opacity: 1;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
+            z-index: 2; /* 确保内容在模糊背景层之上 */
         }
-
+        
         .header {
             text-align: center;
             margin-bottom: 40px;
@@ -218,7 +245,7 @@
             color: rgba(255, 255, 255, 0.5);
             font-size: 1.5rem;
             font-weight: bold;
-            pointer-events: none; /* 让水印不影响点击事件 */
+            pointer-events: none;
             text-shadow: 0 0 5px rgba(0,0,0,0.3);
             white-space: nowrap;
         }
@@ -230,7 +257,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
+            background-color: transparent; /* 将背景色设为透明，使用 body 的模糊背景 */
             display: none;
             justify-content: center;
             align-items: center;
@@ -267,7 +294,6 @@
             transform: rotate(90deg);
         }
 
-        /* 新增：预览模态框内的水印 */
         .modal-watermark {
             position: absolute;
             top: 50%;
@@ -382,10 +408,9 @@
 
         /* 电脑端图片尺寸优化 */
         @media (min-width: 769px) {
-            /* 调整图片预览模态框的图片尺寸，让它在电脑端也不会太大 */
             .image-modal-image {
                 max-width: 900px;
-                max-height: 80vh; /* 限制图片高度不超过视口高度的80% */
+                max-height: 80vh;
             }
         }
     </style>
@@ -691,14 +716,26 @@
         // 图片预览模态框功能
         const modal = document.getElementById('imageModal');
         const modalImage = document.getElementById('modalImage');
+        const body = document.body;
 
         function showImageModal(src) {
             modalImage.src = src;
             modal.style.display = 'flex';
+            
+            // 核心修改：设置 body 背景图片并添加 blur 效果
+            body.style.setProperty('--bg-image', `url('${src}')`);
+            body.classList.add('modal-active');
+            
+            // 确保点击图片时模态框不会因为冒泡而关闭
+            event.stopPropagation();
         }
 
         function closeImageModal() {
             modal.style.display = 'none';
+            
+            // 核心修改：移除 body 的背景和 blur 效果
+            body.classList.remove('modal-active');
+            body.style.setProperty('--bg-image', 'none');
         }
         
         // 当点击预览模态框的背景时，关闭模态框
