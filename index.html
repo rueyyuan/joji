@@ -621,7 +621,7 @@
                     <img src="cxt/cxt4.jpg" alt="客户反馈图片4" class="trust-image">
                     <div class="watermark">Jo极工作室</div>
                 </div>
-                <div class="trust-image-container" onclick="showImageModal('icxt/cxt5.jpg')">
+                <div class="trust-image-container" onclick="showImageModal('cxt/cxt5.jpg')">
                     <img src="cxt/cxt5.jpg" class="trust-image">
                     <div class="watermark">Jo极工作室</div>
                 </div>
@@ -681,7 +681,7 @@
         <span class="image-modal-close" onclick="closeImageModal()">×</span>
         <div class="image-modal-content">
             <!-- 添加了onclick事件，点击图片本身即可关闭模态框 -->
-            <img id="modalImage" class="image-modal-image" src="" alt="放大图片" onclick="closeImageModal()">
+            <img id="modalImage" class="image-modal-image" src="" alt="放大图片">
             <!-- 新增的模态框水印 -->
             <div class="modal-watermark">Jo极工作室</div>
         </div>
@@ -707,6 +707,10 @@
                 closeImageModal();
             }
         });
+
+        // 核心修改：为模态框图片添加触摸事件监听，确保在移动端也能关闭
+        modalImage.addEventListener('click', closeImageModal);
+        modalImage.addEventListener('touchstart', closeImageModal);
 
         // 添加滚动动画效果
         window.addEventListener('scroll', () => {
