@@ -630,27 +630,28 @@
             <h3>🏆 诚信图展示区</h3>
             <div class="trust-images">
                 <!-- 请将下面的 'images/your-image-1.jpg' 替换为你的真实图片路径 -->
-                <div class="trust-image-container" onclick="showImageModal('cxt/cxt1.jpg')">
+                <!-- 更新：添加 event 参数以阻止事件冒泡 -->
+                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt1.jpg')">
                     <img src="cxt/cxt1.jpg" alt="客户反馈图片1" class="trust-image">
                     <div class="watermark">Jo极工作室</div>
                 </div>
-                <div class="trust-image-container" onclick="showImageModal('cxt/cxt2.jpg')">
+                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt2.jpg')">
                     <img src="cxt/cxt2.jpg" alt="客户反馈图片2" class="trust-image">
                     <div class="watermark">Jo极工作室</div>
                 </div>
-                <div class="trust-image-container" onclick="showImageModal('cxt/cxt3.jpg')">
+                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt3.jpg')">
                     <img src="cxt/cxt3.jpg" alt="客户反馈图片3" class="trust-image">
                     <div class="watermark">Jo极工作室</div>
                 </div>
-                <div class="trust-image-container" onclick="showImageModal('cxt/cxt4.jpg')">
+                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt4.jpg')">
                     <img src="cxt/cxt4.jpg" alt="客户反馈图片4" class="trust-image">
                     <div class="watermark">Jo极工作室</div>
                 </div>
-                <div class="trust-image-container" onclick="showImageModal('cxt/cxt5.jpg')">
+                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt5.jpg')">
                     <img src="cxt/cxt5.jpg" class="trust-image">
                     <div class="watermark">Jo极工作室</div>
                 </div>
-                <div class="trust-image-container" onclick="showImageModal('cxt/cxt6.jpg')">
+                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt6.jpg')">
                     <img src="cxt/cxt6.jpg" alt="客户反馈图片6" class="trust-image">
                     <div class="watermark">Jo极工作室</div>
                 </div>
@@ -703,7 +704,8 @@
 
     <!-- 图片预览模态框 -->
     <div id="imageModal" class="image-modal-overlay">
-        <span class="image-modal-close" onclick="closeImageModal()">×</span>
+        <!-- 更新：添加 event 参数以阻止事件冒泡 -->
+        <span class="image-modal-close" onclick="closeImageModal(event)">×</span>
         <div class="image-modal-content">
             <!-- 添加了onclick事件，点击图片本身即可关闭模态框 -->
             <img id="modalImage" class="image-modal-image" src="" alt="放大图片">
@@ -718,19 +720,35 @@
         const modalImage = document.getElementById('modalImage');
         const body = document.body;
 
-        function showImageModal(src) {
+        /**
+         * 显示图片预览模态框。
+         * @param {Event} event - 浏览器事件对象，用于阻止冒泡。
+         * @param {string} src - 图片路径。
+         */
+        function showImageModal(event, src) {
+            // 阻止点击事件向上冒泡，防止点击其他元素
+            if (event) {
+                event.stopPropagation();
+            }
+
             modalImage.src = src;
             modal.style.display = 'flex';
             
             // 核心修改：设置 body 背景图片并添加 blur 效果
             body.style.setProperty('--bg-image', `url('${src}')`);
             body.classList.add('modal-active');
-            
-            // 确保点击图片时模态框不会因为冒泡而关闭
-            event.stopPropagation();
         }
 
-        function closeImageModal() {
+        /**
+         * 关闭图片预览模态框。
+         * @param {Event} event - 浏览器事件对象，用于阻止冒泡。
+         */
+        function closeImageModal(event) {
+            // 阻止点击事件向上冒泡，防止点击其他元素
+            if (event) {
+                event.stopPropagation();
+            }
+
             modal.style.display = 'none';
             
             // 核心修改：移除 body 的背景和 blur 效果
@@ -741,13 +759,18 @@
         // 当点击预览模态框的背景时，关闭模态框
         modal.addEventListener('click', (event) => {
             if (event.target === modal) {
-                closeImageModal();
+                closeImageModal(event);
             }
         });
 
         // 核心修改：为模态框图片添加触摸事件监听，确保在移动端也能关闭
-        modalImage.addEventListener('click', closeImageModal);
-        modalImage.addEventListener('touchstart', closeImageModal);
+        // 使用匿名函数确保事件对象正确传递
+        modalImage.addEventListener('click', (event) => {
+            closeImageModal(event);
+        });
+        modalImage.addEventListener('touchstart', (event) => {
+            closeImageModal(event);
+        });
 
         // 添加滚动动画效果
         window.addEventListener('scroll', () => {
