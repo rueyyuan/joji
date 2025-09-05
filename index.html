@@ -13,14 +13,20 @@
 
         body {
             font-family: 'Microsoft YaHei', 'PingFang SC', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: #333;
             transition: background 0.5s ease-in-out;
             background-size: cover;
             background-attachment: fixed;
+            
+            /* --- UPDATE: Change background to a fixed image --- */
+            /* Please replace 'bj.jpg' with your actual image path */
+            background-image: url('bj.jpg');
+            background-position: center;
+            background-repeat: no-repeat;
+            /* --- END UPDATE --- */
         }
-        
+
         /* 使用伪元素创建模糊背景层，以避免直接影响 body 的内容 */
         body::after {
             content: '';
@@ -38,7 +44,7 @@
             z-index: 1; /* 确保在内容之上，但在弹窗之下 */
             pointer-events: none; /* 确保不会阻碍点击事件 */
         }
-        
+
         .modal-active body::after {
             --bg-opacity: 1;
         }
@@ -50,7 +56,15 @@
             position: relative;
             z-index: 2; /* 确保内容在模糊背景层之上 */
         }
-        
+
+        .logo {
+            display: block;
+            max-width: 500px;
+            height: auto;
+            margin: 0 auto 20px;
+            border-radius: 10px;
+        }
+
         .header {
             text-align: center;
             margin-bottom: 40px;
@@ -417,6 +431,9 @@
 </head>
 <body>
     <div class="container">
+        <!-- 新增：网站Logo -->
+        <img src="logo.png" alt="Jo极工作室 Logo" class="logo">
+        
         <!-- 头部标题 -->
         <div class="header">
             <h1>Jo极工作室</h1>
@@ -628,31 +645,32 @@
     <!-- 诚信展示区 -->
         <div class="trust-section">
             <h3>🏆 诚信图展示区</h3>
+            <p style="color: #666; font-size: 0.9rem; text-align: center;">打开图片后可点击空白处离开图片</p>
             <div class="trust-images">
                 <!-- 请将下面的 'images/your-image-1.jpg' 替换为你的真实图片路径 -->
                 <!-- 更新：添加 event 参数以阻止事件冒泡 -->
-                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt1.jpg')">
-                    <img src="cxt/cxt1.jpg" alt="客户反馈图片1" class="trust-image">
+                <div class="trust-image-container" onclick="showImageModal(event, 'https://placehold.co/400x300/CCCCCC/000000?text=Placeholder+Image')">
+                    <img src="https://placehold.co/400x300/CCCCCC/000000?text=Placeholder+Image" alt="客户反馈图片1" class="trust-image">
                     <div class="watermark">Jo极工作室</div>
                 </div>
-                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt2.jpg')">
-                    <img src="cxt/cxt2.jpg" alt="客户反馈图片2" class="trust-image">
+                <div class="trust-image-container" onclick="showImageModal(event, 'https://placehold.co/400x300/CCCCCC/000000?text=Placeholder+Image')">
+                    <img src="https://placehold.co/400x300/CCCCCC/000000?text=Placeholder+Image" alt="客户反馈图片2" class="trust-image">
                     <div class="watermark">Jo极工作室</div>
                 </div>
-                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt3.jpg')">
-                    <img src="cxt/cxt3.jpg" alt="客户反馈图片3" class="trust-image">
+                <div class="trust-image-container" onclick="showImageModal(event, 'https://placehold.co/400x300/CCCCCC/000000?text=Placeholder+Image')">
+                    <img src="https://placehold.co/400x300/CCCCCC/000000?text=Placeholder+Image" alt="客户反馈图片3" class="trust-image">
                     <div class="watermark">Jo极工作室</div>
                 </div>
-                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt4.jpg')">
-                    <img src="cxt/cxt4.jpg" alt="客户反馈图片4" class="trust-image">
+                <div class="trust-image-container" onclick="showImageModal(event, 'https://placehold.co/400x300/CCCCCC/000000?text=Placeholder+Image')">
+                    <img src="https://placehold.co/400x300/CCCCCC/000000?text=Placeholder+Image" alt="客户反馈图片4" class="trust-image">
                     <div class="watermark">Jo极工作室</div>
                 </div>
-                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt5.jpg')">
-                    <img src="cxt/cxt5.jpg" class="trust-image">
+                <div class="trust-image-container" onclick="showImageModal(event, 'https://placehold.co/400x300/CCCCCC/000000?text=Placeholder+Image')">
+                    <img src="https://placehold.co/400x300/CCCCCC/000000?text=Placeholder+Image" class="trust-image">
                     <div class="watermark">Jo极工作室</div>
                 </div>
-                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt6.jpg')">
-                    <img src="cxt/cxt6.jpg" alt="客户反馈图片6" class="trust-image">
+                <div class="trust-image-container" onclick="showImageModal(event, 'https://placehold.co/400x300/CCCCCC/000000?text=Placeholder+Image')">
+                    <img src="https://placehold.co/400x300/CCCCCC/000000?text=Placeholder+Image" alt="客户反馈图片6" class="trust-image">
                     <div class="watermark">Jo极工作室</div>
                 </div>
             </div>
