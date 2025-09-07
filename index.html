@@ -749,16 +749,21 @@
             <h3>🏆 诚信图展示区</h3>
             <p style="color: #666; font-size: 0.9rem; text-align: center;">打开图片后可点击空白处离开图片</p>
             <div class="trust-images">
+                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt1.jpg')">
+                    <img src="cxt/cxt1.jpg" alt="客户反馈图片4" class="trust-image">
+                    <div class="watermark">Jo极工作室</div>
+                </div>
+                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt2.jpg')">
+                    <img src="cxt/cxt2.jpg" class="trust-image">
+                    <div class="watermark">Jo极工作室</div>
+                </div>
+                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt3.jpg')">
+                    <img src="cxt/cxt3.jpg" alt="客户反馈图片6" class="trust-image">
+                    <div class="watermark">Jo极工作室</div>
+                </div>
+                <!-- 新增的第四张图片 -->
                 <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt4.jpg')">
-                    <img src="cxt/cxt4.jpg" alt="客户反馈图片4" class="trust-image">
-                    <div class="watermark">Jo极工作室</div>
-                </div>
-                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt5.jpg')">
-                    <img src="cxt/cxt5.jpg" class="trust-image">
-                    <div class="watermark">Jo极工作室</div>
-                </div>
-                <div class="trust-image-container" onclick="showImageModal(event, 'cxt/cxt6.jpg')">
-                    <img src="cxt/cxt6.jpg" alt="客户反馈图片6" class="trust-image">
+                    <img src="cxt/cxt4.jpg" alt="客户反馈图片7" class="trust-image">
                     <div class="watermark">Jo极工作室</div>
                 </div>
             </div>
@@ -871,17 +876,56 @@
         // 当点击预览模态框的背景时，关闭模态框
         modal.addEventListener('click', (event) => {
             if (event.target === modal) {
+                event.preventDefault();
                 closeImageModal(event);
             }
         });
 
-        // 核心修改：为模态框图片添加触摸事件监听，确保在移动端也能关闭
-        // 使用匿名函数确保事件对象正确传递
+        // 改进的移动端事件处理
         modalImage.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
             closeImageModal(event);
         });
-        modalImage.addEventListener('touchstart', (event) => {
-            closeImageModal(event);
+        
+        // 改进的触摸事件处理，添加防抖
+        let touchTimer;
+        modalImage.addEventListener('touchend', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            clearTimeout(touchTimer);
+            touchTimer = setTimeout(() => {
+                closeImageModal(event);
+            }, 100);
+        });
+
+        // 添加ESC键关闭功能
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && modal.style.display === 'flex') {
+                closeImageModal(event);
+            }
+        });
+
+        // 防止图片容器在模态框关闭后立即触发
+        let modalJustClosed = false;
+        const originalCloseImageModal = closeImageModal;
+        closeImageModal = function(event) {
+            originalCloseImageModal(event);
+            modalJustClosed = true;
+            setTimeout(() => {
+                modalJustClosed = false;
+            }, 500); // 500ms 防止意外触发
+        };
+
+        // 修改图片容器点击处理
+        document.querySelectorAll('.trust-image-container').forEach(container => {
+            container.addEventListener('click', (event) => {
+                if (modalJustClosed) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return false;
+                }
+            });
         });
 
         // 添加滚动动画效果
