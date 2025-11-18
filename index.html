@@ -764,6 +764,178 @@
             </ul>
         </div>
 
-        <div class="contact-section">
+         <div class="contact-section">
             <h3>📞 联系与下单</h3>
             <p style="margin-bottom: 20px; color: #666;">以下为Jo极工作室联系方式：</p>
+            <div class="contact-buttons-container">
+                <!-- 更新为直接链接 -->
+                <a href="https://m.me/kiat.jeff" target="_blank" class="contact-button">联系客服 1</a>
+                <a href="https://m.me/lin.wen.xuan.323205" target="_blank" class="contact-button">联系客服 2</a>
+            </div>
+            <!-- 新增：联系作者按钮 -->
+            <div class="author-button-container">
+                <a href="https://wa.me/601126867355?text=你好" target="_blank" class="contact-button whatsapp">联系网页作者 - 元</a>
+            </div>
+            
+            <br>
+            <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 5px;">💬</div>
+                    <div>Messenger咨询</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 5px;">💳</div>
+                    <div>TNG付款</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <div class="footer">
+            <p>© 2025 Jo极工作室 | 专业可靠的游戏服务提供商</p>
+            <p style="margin-top: 10px; font-size: 0.8rem;">服务时间：24小时 | 仅接受TNG电子钱包付款</p>
+            <p style="margin-top: 10px; font-size: 0.8rem;">暂停服务时间：每个星期三</p>
+            <p style="margin-top: 15px; font-size: 0.75rem; opacity: 0.7;">网页制作人：元</p>
+        </div>
+    </div>
+
+    <!-- 图片预览模态框 -->
+    <div id="imageModal" class="image-modal-overlay">
+        <!-- 更新：添加 event 参数以阻止事件冒泡 -->
+        <span class="image-modal-close" onclick="closeImageModal(event)">×</span>
+        <div class="image-modal-content">
+            <!-- 添加了onclick事件，点击图片本身即可关闭模态框 -->
+            <img id="modalImage" class="image-modal-image" src="" alt="放大图片">
+            <!-- 新增的模态框水印 -->
+            <div class="modal-watermark">Jo极工作室</div>
+        </div>
+    </div>
+
+    <script>
+        // 图片预览模态框功能
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const body = document.body;
+
+        /**
+         * 显示图片预览模态框。
+         * @param {Event} event - 浏览器事件对象，用于阻止冒泡。
+         * @param {string} src - 图片路径。
+         */
+        function showImageModal(event, src) {
+            // 阻止点击事件向上冒泡，防止点击其他元素
+            if (event) {
+                event.stopPropagation();
+            }
+
+            modalImage.src = src;
+            modal.style.display = 'flex';
+            
+            // 核心修改：设置 body 背景图片并添加 blur 效果
+            body.style.setProperty('--bg-image', `url('${src}')`);
+            body.classList.add('modal-active');
+        }
+
+        /**
+         * 关闭图片预览模态框。
+         * @param {Event} event - 浏览器事件对象，用于阻止冒泡。
+         */
+        function closeImageModal(event) {
+            // 阻止点击事件向上冒泡，防止点击其他元素
+            if (event) {
+                event.stopPropagation();
+            }
+
+            modal.style.display = 'none';
+            
+            // 核心修改：移除 body 的背景和 blur 效果
+            body.classList.remove('modal-active');
+            body.style.setProperty('--bg-image', 'none');
+        }
+        
+        // 当点击预览模态框的背景时，关闭模态框
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                event.preventDefault();
+                closeImageModal(event);
+            }
+        });
+
+        // 改进的移动端事件处理
+        modalImage.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            closeImageModal(event);
+        });
+        
+        // 改进的触摸事件处理，添加防抖
+        let touchTimer;
+        modalImage.addEventListener('touchend', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            clearTimeout(touchTimer);
+            touchTimer = setTimeout(() => {
+                closeImageModal(event);
+            }, 100);
+        });
+
+        // 添加ESC键关闭功能
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && modal.style.display === 'flex') {
+                closeImageModal(event);
+            }
+        });
+
+        // 防止图片容器在模态框关闭后立即触发
+        let modalJustClosed = false;
+        const originalCloseImageModal = closeImageModal;
+        closeImageModal = function(event) {
+            originalCloseImageModal(event);
+            modalJustClosed = true;
+            setTimeout(() => {
+                modalJustClosed = false;
+            }, 500); // 500ms 防止意外触发
+        };
+
+        // 修改图片容器点击处理
+        document.querySelectorAll('.trust-image-container').forEach(container => {
+            container.addEventListener('click', (event) => {
+                if (modalJustClosed) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return false;
+                }
+            });
+        });
+
+        // 添加滚动动画效果
+        window.addEventListener('scroll', () => {
+            const cards = document.querySelectorAll('.service-card, .trust-section, .important-notes, .contact-section, .price-section');
+            cards.forEach(card => {
+                const cardTop = card.getBoundingClientRect().top;
+                const cardVisible = cardTop < window.innerHeight - 100;
+                
+                if (cardVisible) {
+                    card.style.animation = 'fadeInUp 0.6s ease forwards';
+                }
+            });
+        });
+
+        // CSS动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
